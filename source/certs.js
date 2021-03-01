@@ -52,7 +52,7 @@ exports.generate = async function(domain, getKey, getCSR) {
             const filePath = `${pathRead}/${domain}/public/.well-known/acme-challenge/${challenge.token}`;
             const fileContents = keyAuthorization;
 
-            //log(`Creating challenge response for ${authz.identifier.value} at path: ${filePath}`);
+            log(`Creating challenge response for ${authz.identifier.value} at path: ${filePath}`);
 
             /* Replace this */
             //log(`Would write "${fileContents}" to path "${filePath}"`);
@@ -77,7 +77,7 @@ exports.generate = async function(domain, getKey, getCSR) {
         if (challenge.type === 'http-01') {
             const filePath = `${pathRead}/${domain}/public/.well-known/acme-challenge/${challenge.token}`;
 
-            //log(`Removing challenge response for ${authz.identifier.value} at path: ${filePath}`);
+            log(`Removing challenge response for ${authz.identifier.value} at path: ${filePath}`);
 
             /* Replace this */
             //log(`Would remove file on path "${filePath}"`);
@@ -86,25 +86,45 @@ exports.generate = async function(domain, getKey, getCSR) {
     }
 
 
-    /**
-     * Main
-     */
+    // /**
+    //  * Main
+    //  */
 
-    let key = getKey || await acme.forge.createPrivateKey();
+    // let key = getKey || await acme.forge.createPrivateKey();
+    // //accountKey: await acme.forge.createPrivateKey()
 
-    /* Init client */
+    // /* Init client */
+    // const client = new acme.Client({
+    //     directoryUrl: acme.directory.letsencrypt.production,
+    //     accountKey: key
+    // });
+
+    // /* Create CSR */
+    // let csr = getCSR || (await acme.forge.createCsr(dataCSR))[1];
+
+    // /* Certificate */
+    // const cert = await client.auto({
+    //     csr,
+    //     email: email,
+    //     termsOfServiceAgreed: true,
+    //     challengeCreateFn,
+    //     challengeRemoveFn
+    // });
+
+
+
     const client = new acme.Client({
         directoryUrl: acme.directory.letsencrypt.production,
-        accountKey: key
+        accountKey: await acme.forge.createPrivateKey()
     });
 
     /* Create CSR */
-    let csr = getCSR || (await acme.forge.createCsr(dataCSR))[1];
+    const [key, csr] = await acme.forge.createCsr(dataCSR);
 
     /* Certificate */
     const cert = await client.auto({
         csr,
-        email: email,
+        email,
         termsOfServiceAgreed: true,
         challengeCreateFn,
         challengeRemoveFn
@@ -117,7 +137,7 @@ exports.generate = async function(domain, getKey, getCSR) {
         csr: csr.toString(),
         dateEnd: info.notAfter,
     });
-
+    // 
     fs.writeFileSync(`${pathSave}/${domain}.pem`, key.toString() + '\n' + cert.toString());
 
     log('Done!');
@@ -126,6 +146,6 @@ exports.generate = async function(domain, getKey, getCSR) {
     /* Done */
     //log(`CSR:\n${csr.toString()}`);
     //log(`Private key:\n${key.toString()}`);
-    //log(`Certificate:\n${cert.toString()}`);
+    log(`Certificate:\n${cert.toString()}`);
 
 }
