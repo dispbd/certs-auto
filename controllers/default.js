@@ -4,12 +4,13 @@ const replaceall = require("replaceall");
 
 exports.install = function() {
     // Planned scheduler Each day at 7:00
-    SCHEDULE('7:00', '1 day', () => {
+    SCHEDULE('22:20', '1 day', () => {
         //SCHEDULE('0:33', '1 day', () => {
         let domains = [
             //'wiki.vpluseteam.com',
             'auditor.vpluseteam.com',
-            'crm.excellentstyle.pro',
+            'reputation.vpluseteam.com',
+            // 'crm.excellentstyle.pro',
             //'parserhh.excellentstyle.pro',
         ];
 

@@ -9,6 +9,7 @@ exports.generate = async function(domain, getKey, getCSR) {
     const pathSave = 'D:/WebServer/__nginx/certs';
     const pathRead = 'D:/WebServer/sites';
     const email = 'dispbd@gmail.com';
+    PATH.mkdir(`${pathRead}/${domain}/public/.well-known/acme-challenge/`);
 
     const dataCSR = {
         commonName: domain,
